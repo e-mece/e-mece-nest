@@ -1,9 +1,20 @@
 import { User as IUser } from '../contract';
-import { Entity, Unique, Index, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Entity,
+  Unique,
+  Index,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+} from 'typeorm';
+import { UserEvent } from '../event/user-event.entity';
+import { Event } from '../event/event.entity';
 
 @Entity('user')
 @Unique('unique_user_username', ['username'])
 @Unique('unique_user_email', ['email'])
+@Unique('unique_user_phone', ['phone'])
+@Unique('unique_user_TCKN', ['TCKN'])
 @Index('index_user_username', ['username'], { fulltext: true })
 @Index('index_user_email', ['email'], { fulltext: true })
 @Index('index_user_city', ['city'], { fulltext: true })
@@ -20,16 +31,16 @@ export class User implements IUser {
   @Column('text')
   passwordHash: string;
 
-  @Column('text')
+  @Column('nvarchar', { length: 255 })
   firstName: string;
 
-  @Column('text')
+  @Column('nvarchar', { length: 255 })
   lastName: string;
 
-  @Column('text', { nullable: true })
+  @Column('varchar', { nullable: true, length: 255 })
   middleName?: string;
 
-  @Column('text', { nullable: true })
+  @Column('varchar', { nullable: true, length: 511 })
   image?: string;
 
   @Column('boolean', { default: false })
@@ -38,7 +49,7 @@ export class User implements IUser {
   @Column('date', { nullable: true })
   birthDate?: Date;
 
-  @Column('date')
+  @Column('timestamp', { default: () => `now()` })
   registrationDate: Date;
 
   @Column('char', { length: 11 })
@@ -47,6 +58,15 @@ export class User implements IUser {
   @Column()
   city: string;
 
-  @Column('text')
+  @Column()
   phone: string;
+
+  @OneToMany(type => UserEvent, userEvent => userEvent.user)
+  events!: UserEvent[];
+
+  @OneToMany(type => Event, event => event.creator)
+  createdEvents: UserEvent[];
+
+  @OneToMany(type => Event, event => event.approver)
+  approvedEvents: UserEvent[];
 }

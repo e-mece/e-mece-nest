@@ -7,7 +7,7 @@ export class EmailChange {
   @PrimaryColumn('char', { length: 21 })
   token: string;
 
-  @Column('text')
+  @Column('varchar', { length: 255 })
   newEmail: string;
 
   @Column('int')
