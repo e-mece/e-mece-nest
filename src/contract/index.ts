@@ -1,3 +1,6 @@
+export { UserType } from './enums/user-type.enum';
+
+export { Event } from './models/event.model';
 export { User } from './models/user.model';
 
 export { ChangeEmailRequest } from './request/change-email-request.model';
@@ -6,5 +9,5 @@ export { LoginRequest } from './request/login-request.model';
 export { ResetPasswordRequest } from './request/reset-password-request.model';
 export { SignupRequest } from './request/signup-request.model';
 
-export { GetResponse } from './response/get-response.model';
+export { GetUserResponse } from './response/get-user-response.model';
 export { LoginResponse } from './response/login-response.model';

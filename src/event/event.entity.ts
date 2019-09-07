@@ -6,12 +6,13 @@ import {
   OneToMany,
   ManyToOne,
 } from 'typeorm';
+import { Event as IEvent } from '../contract';
 import { UserEvent } from './user-event.entity';
 import { User } from '../user/user.entity';
 
 @Entity('event')
 @Index('index_event_city', ['city'], { fulltext: true })
-export class Event {
+export class Event implements IEvent {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -50,6 +51,12 @@ export class Event {
 
   @Column('int', { nullable: true })
   point: number;
+
+  @Column('timestamp', { default: () => `now()` })
+  created: Date;
+
+  @Column('timestamp', { default: () => `now()` })
+  modified: Date;
 
   @OneToMany(type => UserEvent, userEvent => userEvent.event)
   participants!: UserEvent[];

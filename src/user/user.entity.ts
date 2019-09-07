@@ -1,4 +1,4 @@
-import { User as IUser } from '../contract';
+import { User as IUser, UserType } from '../contract';
 import {
   Entity,
   Unique,
@@ -60,6 +60,9 @@ export class User implements IUser {
 
   @Column()
   phone: string;
+
+  @Column('tinyint', { default: UserType.User })
+  type: UserType;
 
   @OneToMany(type => UserEvent, userEvent => userEvent.user)
   events!: UserEvent[];

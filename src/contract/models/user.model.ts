@@ -1,7 +1,10 @@
+import { UserType } from '../enums/user-type.enum';
+
 export class User {
   id?: number;
   username?: string;
   email?: string;
+  passwordHash?: string;
   firstName?: string;
   lastName?: string;
   middleName?: string;
@@ -12,4 +15,5 @@ export class User {
   TCKN?: string;
   city?: string;
   phone?: string;
+  type?: UserType;
 }
