@@ -64,11 +64,13 @@ export class Event implements IEvent {
   @OneToMany(type => UserEvent, userEvent => userEvent.event)
   participants!: UserEvent[];
 
+  @Column()
   creatorId: number;
   @ManyToOne(type => User, user => user.createdEvents, { nullable: false })
   creator: User;
 
+  @Column({ nullable: true })
   approverId: number;
-  @ManyToOne(type => User, user => user.approvedEvents, { nullable: true })
+  // @ManyToOne(type => User, user => user.approvedEvents, { nullable: true })
   approver: User;
 }
