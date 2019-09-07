@@ -13,6 +13,10 @@ export function toUserEntity(userModel: IUser): User {
   userEntity.emailVerified = userModel.emailVerified;
   userEntity.birthDate = userModel.birthDate;
   userEntity.registrationDate = userModel.registrationDate;
+  userEntity.TCKN = userModel.TCKN;
+  userEntity.city = userModel.city;
+  userEntity.phone = userModel.phone;
+  userEntity.type = userModel.type;
   return userEntity;
 }
 
@@ -28,5 +32,52 @@ export function toUserModel(userEntity: User): IUser {
   userModel.emailVerified = userEntity.emailVerified;
   userModel.birthDate = userEntity.birthDate;
   userModel.registrationDate = userEntity.registrationDate;
+  userModel.TCKN = userEntity.TCKN;
+  userModel.city = userEntity.city;
+  userModel.phone = userEntity.phone;
+  userModel.type = userEntity.type;
   return userModel;
+}
+
+/**
+ * Updates userEntity's fields with userModel's defined field values.
+ * Ignores relations. Does not update some fields' values (id, email,
+ * emailVerified, registrationDate, TCKN, type) on purpose.
+ * @param userEntity Entity to update fields
+ * @param userModel Model that contains new values
+ */
+export function updateUserEntityFromModel(
+  userEntity: User,
+  userModel: IUser,
+): void {
+  // id cannot change
+  if (userModel.username !== undefined) {
+    userEntity.username = userModel.username;
+  }
+  // email update is separated
+  // email verification is separated
+  if (userModel.firstName !== undefined) {
+    userEntity.firstName = userModel.firstName;
+  }
+  if (userModel.lastName !== undefined) {
+    userEntity.lastName = userModel.lastName;
+  }
+  if (userModel.middleName !== undefined) {
+    userEntity.middleName = userModel.middleName;
+  }
+  if (userModel.image !== undefined) {
+    userEntity.image = userModel.image;
+  }
+  if (userModel.birthDate !== undefined) {
+    userEntity.birthDate = userModel.birthDate;
+  }
+  // registrationDate can't be updated
+  // TCKN cannot be updated
+  if (userModel.city !== undefined) {
+    userEntity.city = userModel.city;
+  }
+  if (userModel.phone !== undefined) {
+    userEntity.phone = userModel.phone;
+  }
+  // type cannot be updated
 }
