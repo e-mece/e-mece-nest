@@ -5,6 +5,7 @@ import {
   UnauthorizedException,
   InternalServerErrorException,
   ConflictException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Event } from './event.entity';
@@ -97,6 +98,53 @@ export class EventService {
       await this.userEventRepository.insert(userEvent);
     } catch (err) {
       throw new ConflictException();
+    }
+  }
+
+  public async approveEventParticipation(
+    eventId: number,
+    creatorId: number,
+    userId: number,
+  ): Promise<void> {
+    const eventEntity = await this.eventRepository.findOne(eventId);
+    if (isNullOrUndefined(eventEntity)) {
+      throw new NotFoundException();
+    }
+    if (eventEntity.creatorId !== creatorId) {
+      throw new UnauthorizedException();
+    }
+
+    // check date
+    const oneHourBeforeStart = new Date(eventEntity.startDate.getDate());
+    oneHourBeforeStart.setHours(oneHourBeforeStart.getHours() - 1);
+
+    const oneHourAfterEnd = new Date(eventEntity.endDate.getDate());
+    oneHourAfterEnd.setHours(oneHourAfterEnd.getHours() + 1);
+
+    const currentTime = new Date();
+
+    if (oneHourBeforeStart < currentTime && currentTime < oneHourAfterEnd) {
+      const userEventEntity = await this.userEventRepository.findOne({
+        userId,
+        eventId,
+      });
+
+      if (isNullOrUndefined(userEventEntity)) {
+        throw new NotFoundException();
+      }
+
+      userEventEntity.approved = true;
+
+      try {
+        await this.userEventRepository.update(
+          { userId, eventId },
+          userEventEntity,
+        );
+      } catch (err) {
+        throw new InternalServerErrorException();
+      }
+    } else {
+      throw new ForbiddenException();
     }
   }
 

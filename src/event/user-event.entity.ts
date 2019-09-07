@@ -13,6 +13,9 @@ export class UserEvent {
   @Column('boolean', { default: true })
   active: boolean;
 
+  @Column('boolean', { default: false })
+  approved: boolean;
+
   @Column('timestamp', { default: () => `now()` })
   created: Date;
 
