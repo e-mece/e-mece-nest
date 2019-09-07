@@ -1,9 +1,24 @@
-import { Controller, HttpCode, Post, UseGuards, Body } from '@nestjs/common';
+import {
+  Controller,
+  HttpCode,
+  Post,
+  UseGuards,
+  Body,
+  Put,
+  Param,
+  ParseIntPipe,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { EventService } from './event.service';
 import { AuthGuard } from '@nestjs/passport';
 import { Usr } from '../user/user.decorator';
 import { User } from '../user/user.entity';
-import { CreateEventRequest, CreateEventResponse, UserType } from '../contract';
+import {
+  CreateEventRequest,
+  CreateEventResponse,
+  UserType,
+  UpdateEventRequest,
+} from '../contract';
 import { ApiUseTags } from '@nestjs/swagger';
 
 @ApiUseTags('auth')
@@ -25,5 +40,19 @@ export class EventController {
         user.type === UserType.Organizator,
       ),
     );
+  }
+
+  @Put(':id')
+  @HttpCode(200)
+  @UseGuards(AuthGuard())
+  async updateEvent(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateRequest: UpdateEventRequest,
+    @Usr() user: User,
+  ): Promise<void> {
+    if (id !== updateRequest.event.id) {
+      throw new UnauthorizedException();
+    }
+    await this.eventService.updateEvent(updateRequest, user.id);
   }
 }

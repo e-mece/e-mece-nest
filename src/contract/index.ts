@@ -9,6 +9,7 @@ export { CreateEventRequest } from './request/create-event-request.model';
 export { LoginRequest } from './request/login-request.model';
 export { ResetPasswordRequest } from './request/reset-password-request.model';
 export { SignupRequest } from './request/signup-request.model';
+export { UpdateEventRequest } from './request/update-event-request.model';
 
 export { CreateEventResponse } from './response/create-event-response.model';
 export { GetUserResponse } from './response/get-user-response.model';
