@@ -4,6 +4,7 @@ import {
   NotFoundException,
   UnauthorizedException,
   InternalServerErrorException,
+  ConflictException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Event } from './event.entity';
@@ -20,27 +21,47 @@ import {
   updateEventEntityFromModel,
 } from './event.mapper';
 import { isNullOrUndefined } from 'util';
+import { UserEvent } from './user-event.entity';
+import { toUserModel } from '../user/user.mapper';
 
 @Injectable()
 export class EventService {
   constructor(
     @InjectRepository(Event)
     private readonly eventRepository: Repository<Event>,
+    @InjectRepository(UserEvent)
+    private readonly userEventRepository: Repository<UserEvent>,
   ) {}
 
-  public async getEventWithParticipantsAndCreator(
+  public async getEventWithNParticipantsAndCreator(
     eventId: number,
+    participantLimit: number,
   ): Promise<GetEventResponse> {
     const eventEntity = await this.eventRepository.findOne(eventId, {
       relations: ['creator'],
     });
-    console.log(eventEntity);
 
     if (isNullOrUndefined(eventEntity)) {
       throw new NotFoundException();
     }
 
-    return null;
+    // there is also findAndCount if needed for pagination
+    const participants = await this.userEventRepository
+      .find({
+        where: { eventId },
+        relations: ['user'],
+        order: { created: 'DESC' },
+        take: participantLimit,
+      })
+      .then((userEvents: UserEvent[]) =>
+        userEvents.map(userEvent => toUserModel(userEvent.user)),
+      );
+
+    return new GetEventResponse(
+      toEventModel(eventEntity),
+      toUserModel(eventEntity.creator),
+      participants,
+    );
   }
 
   public async updateEvent(
@@ -65,6 +86,17 @@ export class EventService {
       await this.eventRepository.update(eventEntity.id, eventEntity);
     } catch (err) {
       throw new BadRequestException(err);
+    }
+  }
+
+  public async enrollToEvent(eventId: number, userId: number): Promise<void> {
+    const userEvent = new UserEvent();
+    userEvent.userId = userId;
+    userEvent.eventId = eventId;
+    try {
+      await this.userEventRepository.insert(userEvent);
+    } catch (err) {
+      throw new ConflictException();
     }
   }
 

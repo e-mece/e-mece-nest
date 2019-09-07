@@ -47,6 +47,17 @@ export class EventController {
   }
 
   @ApiBearerAuth()
+  @Post('enroll/:id')
+  @HttpCode(200)
+  @UseGuards(AuthGuard())
+  async enrollToEvent(
+    @Param('id', ParseIntPipe) id: number,
+    @Usr() user: User,
+  ): Promise<void> {
+    await this.eventService.enrollToEvent(id, user.id);
+  }
+
+  @ApiBearerAuth()
   @Put(':id')
   @HttpCode(200)
   @UseGuards(AuthGuard())
@@ -77,6 +88,6 @@ export class EventController {
   async getEventWithParticipants(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<GetEventResponse> {
-    return await this.eventService.getEventWithParticipantsAndCreator(id);
+    return await this.eventService.getEventWithNParticipantsAndCreator(id, 3);
   }
 }

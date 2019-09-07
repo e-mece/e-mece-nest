@@ -1,8 +1,9 @@
-import { Entity, Column, PrimaryColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryColumn, ManyToOne, Index } from 'typeorm';
 import { User } from '../user/user.entity';
 import { Event } from './event.entity';
 
 @Entity('user-event')
+@Index('index_user-event_created', ['created'])
 export class UserEvent {
   @PrimaryColumn()
   userId: number;
