@@ -13,5 +13,8 @@ export { UpdateEventRequest } from './request/update-event-request.model';
 
 export { CreateEventResponse } from './response/create-event-response.model';
 export { GetEventResponse } from './response/get-event-response.model';
+export {
+  GetLeaderboardResponse,
+} from './response/get-leaderboard-response.model';
 export { GetUserResponse } from './response/get-user-response.model';
 export { LoginResponse } from './response/login-response.model';

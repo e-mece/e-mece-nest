@@ -8,8 +8,10 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
-import { SignupRequest } from '../contract';
+import { SignupRequest, GetLeaderboardResponse } from '../contract';
 import { isNullOrUndefined } from 'util';
+import { getConnection } from 'typeorm';
+import { toUserModel } from './user.mapper';
 
 @Injectable()
 export class UserService {
@@ -85,5 +87,22 @@ export class UserService {
       Logger.warn(JSON.stringify(err));
       throw new BadRequestException();
     }
+  }
+
+  public async getLeaderBoard(limit: number): Promise<GetLeaderboardResponse> {
+    let creationPoints: Array<{ uid: number; spts: number }> = null;
+
+    creationPoints = await getConnection()
+      .createEntityManager()
+      .query(
+        // tslint:disable-next-line: max-line-length
+        `SELECT uid, sum(pts) as spts FROM (SELECT u.id as uid, 2 * SUM(e.point) as pts FROM user u, event e WHERE u.id=e.creatorId AND e.approved = TRUE GROUP BY u.id UNION SELECT u.id as uid, SUM(e.point) AS pts FROM user u, event e, \`user-event\` ue WHERE u.id=ue.userId and e.id=ue.eventId and ue.approved = TRUE GROUP BY u.id ) as tbl  GROUP BY uid HAVING spts IS NOT NULL ORDER BY spts DESC LIMIT ${limit};`,
+      );
+
+    const users = await this.userRepository.findByIds(
+      creationPoints.map(cP => cP.uid),
+    );
+
+    return new GetLeaderboardResponse(users.map(user => toUserModel(user)));
   }
 }
