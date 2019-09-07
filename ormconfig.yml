@@ -1,9 +1,9 @@
 default:
   type: postgres
-  host: 34.82.17.186
+  host: http://34.82.17.186
   port: 3306
-  username: adiniz
-  password: adiniz123
+  username: ahmet
+  password: ahmet123
   database: emece
   synchronize: true
   logging: true
