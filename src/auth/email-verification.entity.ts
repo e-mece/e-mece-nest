@@ -4,10 +4,10 @@ import { Entity, PrimaryColumn, Column, Unique, Index } from 'typeorm';
 @Unique('unique_email-verification_userId', ['userId'])
 @Index('index_email-verification_userId', ['userId'])
 export class EmailVerification {
-  @PrimaryColumn('character', { length: 21 })
+  @PrimaryColumn('char', { length: 21 })
   token: string;
 
-  @Column('integer')
+  @Column('int')
   userId: number;
 
   @Column('timestamp')

@@ -6,6 +6,8 @@ import {
   MaxLength,
   MinLength,
   IsOptional,
+  Length,
+  IsString,
 } from 'class-validator';
 
 export class SignupRequest {
@@ -45,4 +47,19 @@ export class SignupRequest {
   @Matches(RegExp('^[A-Za-zıöüçğşİÖÜÇĞŞñÑáéíóúÁÉÍÓÚ ]+$'))
   @MaxLength(20)
   middleName?: string;
+
+  @ApiModelProperty()
+  @IsString()
+  @Length(11)
+  TCKN: string;
+
+  @ApiModelProperty()
+  @IsString()
+  @MaxLength(255)
+  city: string;
+
+  @ApiModelProperty()
+  @IsString()
+  @MaxLength(255)
+  phone: string;
 }

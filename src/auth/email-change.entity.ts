@@ -4,13 +4,13 @@ import { Entity, PrimaryColumn, Column, Unique, Index } from 'typeorm';
 @Unique('unique_email-change_userId', ['userId'])
 @Index('index_email-change_userId', ['userId'])
 export class EmailChange {
-  @PrimaryColumn('character', { length: 21 })
+  @PrimaryColumn('char', { length: 21 })
   token: string;
 
   @Column('text')
   newEmail: string;
 
-  @Column('integer')
+  @Column('int')
   userId: number;
 
   @Column('timestamp')

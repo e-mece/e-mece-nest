@@ -22,8 +22,8 @@ export default {
   project: {
     name: 'e-mece',
     address: 'https://e-mece.gov.tr',
-    logoUrl: 'https://github.com/e-mece/logo/raw/master/logo.webp',
-    slogan: 'Made with ❤️ in Ankara',
+    logoUrl: 'https://github.com/e-mece/logo/raw/master/logo.png',
+    slogan: 'Made with ❤️ in Genç Hackathon',
     color: '#b40001',
     socials: [['GitHub', 'https://github.com/e-mece/']],
     url: 'https://e-mece.gsb.gov.tr',

@@ -1,6 +1,7 @@
 default:
-  type: postgres
-  host: http://34.82.17.186
+  type: mysql
+  charset: utf8mb4
+  host: 34.82.17.186
   port: 3306
   username: ahmet
   password: ahmet123
@@ -8,7 +9,7 @@ default:
   synchronize: true
   logging: true
   entities:
-    - src/**/*.entity.ts
+    # - src/**/*.entity.ts
     - dist/**/*.entity.js
   migrations:
     - database/migrations/**/*.ts

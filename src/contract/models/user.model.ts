@@ -9,4 +9,7 @@ export class User {
   emailVerified?: boolean;
   birthDate?: Date;
   registrationDate?: Date;
+  TCKN?: string;
+  city?: string;
+  phone?: string;
 }

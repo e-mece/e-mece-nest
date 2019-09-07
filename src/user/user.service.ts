@@ -47,6 +47,9 @@ export class UserService {
     newUser.firstName = signupRequest.firstName;
     newUser.lastName = signupRequest.lastName;
     newUser.middleName = signupRequest.middleName;
+    newUser.TCKN = signupRequest.TCKN;
+    newUser.city = signupRequest.city;
+    newUser.phone = signupRequest.phone;
     newUser.registrationDate = new Date();
     try {
       // insert also updates id of newUser, we can directly return newUser
