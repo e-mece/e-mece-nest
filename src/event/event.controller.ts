@@ -10,6 +10,7 @@ import {
   UnauthorizedException,
   Delete,
   Get,
+  HttpStatus,
 } from '@nestjs/common';
 import { EventService } from './event.service';
 import { AuthGuard } from '@nestjs/passport';
@@ -31,7 +32,7 @@ export class EventController {
 
   @ApiBearerAuth()
   @Post()
-  @HttpCode(201)
+  @HttpCode(HttpStatus.CREATED)
   @UseGuards(AuthGuard())
   async createEvent(
     @Body() createRequest: CreateEventRequest,
@@ -48,7 +49,7 @@ export class EventController {
 
   @ApiBearerAuth()
   @Post('enroll/:id')
-  @HttpCode(200)
+  @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard())
   async enrollToEvent(
     @Param('id', ParseIntPipe) id: number,
@@ -59,7 +60,7 @@ export class EventController {
 
   @ApiBearerAuth()
   @Put(':id')
-  @HttpCode(200)
+  @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard())
   async updateEvent(
     @Param('id', ParseIntPipe) id: number,
@@ -74,7 +75,7 @@ export class EventController {
 
   @ApiBearerAuth()
   @Delete(':id')
-  @HttpCode(200)
+  @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard())
   async cancelEvent(
     @Param('id', ParseIntPipe) id: number,
@@ -84,7 +85,7 @@ export class EventController {
   }
 
   @Get(':id')
-  @HttpCode(200)
+  @HttpCode(HttpStatus.OK)
   async getEventWithParticipants(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<GetEventResponse> {
