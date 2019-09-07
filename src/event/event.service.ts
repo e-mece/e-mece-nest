@@ -3,6 +3,7 @@ import {
   BadRequestException,
   NotFoundException,
   UnauthorizedException,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Event } from './event.entity';
@@ -63,11 +64,27 @@ export class EventService {
       newEvent.approverId = userId;
     }
     try {
-      this.eventRepository.insert(newEvent);
+      await this.eventRepository.insert(newEvent);
       return toEventModel(newEvent);
     } catch (err) {
       // TODO: err also returns pwd hash :)
       throw new BadRequestException(err);
+    }
+  }
+
+  public async cancelEvent(eventId: number, userId: number) {
+    const eventEntity = await this.eventRepository.findOne(eventId);
+    if (isNullOrUndefined(eventEntity)) {
+      throw new NotFoundException();
+    }
+    if (eventEntity.creatorId !== userId) {
+      throw new UnauthorizedException();
+    }
+    eventEntity.isCancelled = true;
+    try {
+      await this.eventRepository.update(eventId, eventEntity);
+    } catch (err) {
+      throw new InternalServerErrorException();
     }
   }
 }

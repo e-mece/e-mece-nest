@@ -8,6 +8,7 @@ import {
   Param,
   ParseIntPipe,
   UnauthorizedException,
+  Delete,
 } from '@nestjs/common';
 import { EventService } from './event.service';
 import { AuthGuard } from '@nestjs/passport';
@@ -54,5 +55,15 @@ export class EventController {
       throw new UnauthorizedException();
     }
     await this.eventService.updateEvent(updateRequest, user.id);
+  }
+
+  @Delete(':id')
+  @HttpCode(200)
+  @UseGuards(AuthGuard())
+  async cancelEvent(
+    @Param('id', ParseIntPipe) id: number,
+    @Usr() user: User,
+  ): Promise<void> {
+    await this.eventService.cancelEvent(id, user.id);
   }
 }

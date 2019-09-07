@@ -58,6 +58,9 @@ export class Event implements IEvent {
   @Column('timestamp', { default: () => `now()`, onUpdate: `now()` })
   modified: Date;
 
+  @Column('boolean', { default: false })
+  isCancelled: boolean;
+
   @OneToMany(type => UserEvent, userEvent => userEvent.event)
   participants!: UserEvent[];
 
