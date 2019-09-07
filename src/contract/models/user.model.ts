@@ -11,7 +11,8 @@ export class User {
   image?: string;
   emailVerified?: boolean;
   birthDate?: Date;
-  registrationDate?: Date;
+  created?: Date;
+  modified?: Date;
   TCKN?: string;
   city?: string;
   phone?: string;

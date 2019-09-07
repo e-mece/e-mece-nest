@@ -50,7 +50,10 @@ export class User implements IUser {
   birthDate?: Date;
 
   @Column('timestamp', { default: () => `now()` })
-  registrationDate: Date;
+  created: Date;
+
+  @Column('timestamp', { default: () => `now()`, onUpdate: `now()` })
+  modified: Date;
 
   @Column('char', { length: 11 })
   TCKN: string;

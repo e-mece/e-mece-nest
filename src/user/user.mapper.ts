@@ -12,7 +12,8 @@ export function toUserEntity(userModel: IUser): User {
   userEntity.image = userModel.image;
   userEntity.emailVerified = userModel.emailVerified;
   userEntity.birthDate = userModel.birthDate;
-  userEntity.registrationDate = userModel.registrationDate;
+  userEntity.created = userModel.created;
+  userEntity.modified = userModel.modified;
   userEntity.TCKN = userModel.TCKN;
   userEntity.city = userModel.city;
   userEntity.phone = userModel.phone;
@@ -31,7 +32,8 @@ export function toUserModel(userEntity: User): IUser {
   userModel.image = userEntity.image;
   userModel.emailVerified = userEntity.emailVerified;
   userModel.birthDate = userEntity.birthDate;
-  userModel.registrationDate = userEntity.registrationDate;
+  userModel.created = userEntity.created;
+  userModel.modified = userEntity.modified;
   userModel.TCKN = userEntity.TCKN;
   userModel.city = userEntity.city;
   userModel.phone = userEntity.phone;

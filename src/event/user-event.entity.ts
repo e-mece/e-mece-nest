@@ -15,7 +15,7 @@ export class UserEvent {
   @Column('timestamp', { default: () => `now()` })
   created: Date;
 
-  @Column('timestamp', { default: () => `now()` })
+  @Column('timestamp', { default: () => `now()`, onUpdate: `now()` })
   modified: Date;
 
   @ManyToOne(type => User, user => user.events, {

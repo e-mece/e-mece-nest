@@ -55,7 +55,7 @@ export class Event implements IEvent {
   @Column('timestamp', { default: () => `now()` })
   created: Date;
 
-  @Column('timestamp', { default: () => `now()` })
+  @Column('timestamp', { default: () => `now()`, onUpdate: `now()` })
   modified: Date;
 
   @OneToMany(type => UserEvent, userEvent => userEvent.event)
