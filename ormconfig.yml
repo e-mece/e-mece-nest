@@ -1,10 +1,10 @@
 default:
   type: postgres
-  host: localhost
-  port: 5432
-  username: __YOUR_USERNAME__
-  password: __YOUR_PASSWORD__
-  database: __YOUR_DATABASE__
+  host: 34.82.17.186
+  port: 3306
+  username: adiniz
+  password: adiniz123
+  database: emece
   synchronize: true
   logging: true
   entities:
