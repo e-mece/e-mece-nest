@@ -12,6 +12,7 @@ import {
   CreateEventRequest,
   Event as IEvent,
   UpdateEventRequest,
+  GetEventResponse,
 } from '../contract';
 import {
   toEventEntity,
@@ -26,6 +27,21 @@ export class EventService {
     @InjectRepository(Event)
     private readonly eventRepository: Repository<Event>,
   ) {}
+
+  public async getEventWithParticipantsAndCreator(
+    eventId: number,
+  ): Promise<GetEventResponse> {
+    const eventEntity = await this.eventRepository.findOne(eventId, {
+      relations: ['creator'],
+    });
+    console.log(eventEntity);
+
+    if (isNullOrUndefined(eventEntity)) {
+      throw new NotFoundException();
+    }
+
+    return null;
+  }
 
   public async updateEvent(
     updateEventRequest: UpdateEventRequest,

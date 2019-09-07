@@ -9,6 +9,7 @@ import {
   ParseIntPipe,
   UnauthorizedException,
   Delete,
+  Get,
 } from '@nestjs/common';
 import { EventService } from './event.service';
 import { AuthGuard } from '@nestjs/passport';
@@ -19,14 +20,16 @@ import {
   CreateEventResponse,
   UserType,
   UpdateEventRequest,
+  GetEventResponse,
 } from '../contract';
-import { ApiUseTags } from '@nestjs/swagger';
+import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
 
-@ApiUseTags('auth')
+@ApiUseTags('event')
 @Controller('event')
 export class EventController {
   constructor(private readonly eventService: EventService) {}
 
+  @ApiBearerAuth()
   @Post()
   @HttpCode(201)
   @UseGuards(AuthGuard())
@@ -43,6 +46,7 @@ export class EventController {
     );
   }
 
+  @ApiBearerAuth()
   @Put(':id')
   @HttpCode(200)
   @UseGuards(AuthGuard())
@@ -57,6 +61,7 @@ export class EventController {
     await this.eventService.updateEvent(updateRequest, user.id);
   }
 
+  @ApiBearerAuth()
   @Delete(':id')
   @HttpCode(200)
   @UseGuards(AuthGuard())
@@ -65,5 +70,13 @@ export class EventController {
     @Usr() user: User,
   ): Promise<void> {
     await this.eventService.cancelEvent(id, user.id);
+  }
+
+  @Get(':id')
+  @HttpCode(200)
+  async getEventWithParticipants(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<GetEventResponse> {
+    return await this.eventService.getEventWithParticipantsAndCreator(id);
   }
 }
