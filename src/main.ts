@@ -34,10 +34,11 @@ async function bootstrap() {
 
   // Swagger API Documentation
   const options = new DocumentBuilder()
-    .setTitle('NestJS Hackathon Starter by @ahmetuysal')
-    .setDescription('NestJS Hackathon Starter API description')
+    .setTitle('e-mece Backend by Team Üç Martı')
+    .setDescription('e-mece Backend API')
     .setVersion('1.0')
     .addTag('auth')
+    .addTag('event')
     // You can add new tags for your controllers here
     .addBearerAuth()
     .build();
