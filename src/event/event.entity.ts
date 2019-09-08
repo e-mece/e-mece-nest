@@ -12,6 +12,7 @@ import { User } from '../user/user.entity';
 
 @Entity('event')
 @Index('index_event_city', ['city'], { fulltext: true })
+@Index('index_event_startDate', ['startDate'])
 export class Event implements IEvent {
   @PrimaryGeneratedColumn()
   id: number;

@@ -18,6 +18,7 @@ export {
   GetCityLeaderboardResponse,
 } from './response/get-city-leaderboard-response.model';
 export { GetEventResponse } from './response/get-event-response.model';
+export { GetEventsResponse } from './response/get-events-response.model';
 export {
   GetLeaderboardResponse,
 } from './response/get-leaderboard-response.model';

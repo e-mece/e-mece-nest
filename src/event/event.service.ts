@@ -17,6 +17,7 @@ import {
   GetEventResponse,
   GetCityLeaderboardResponse,
   CityLeader,
+  GetEventsResponse,
 } from '../contract';
 import {
   toEventEntity,
@@ -26,6 +27,7 @@ import {
 import { isNullOrUndefined } from 'util';
 import { UserEvent } from './user-event.entity';
 import { toUserModel } from '../user/user.mapper';
+import { PaginationOptionsInterface } from '../paginate';
 
 @Injectable()
 export class EventService {
@@ -152,6 +154,30 @@ export class EventService {
     } else {
       throw new ForbiddenException();
     }
+  }
+
+  async paginate(
+    options: PaginationOptionsInterface,
+  ): Promise<GetEventsResponse> {
+    const [results, total] = await this.eventRepository.findAndCount({
+      where: {
+        approved: true,
+        isCancelled: false,
+        startDate: date => date > new Date(),
+      },
+      take: options.limit,
+      skip: options.page, // think this needs to be page * limit
+      order: { startDate: 'ASC' },
+    });
+
+    const eventModels = results.map(eE => toEventModel(eE));
+
+    const result = new GetEventsResponse(eventModels);
+
+    result.total = total;
+    result.pageTotal = Math.floor(total / options.limit);
+
+    return result;
   }
 
   public async createEvent(

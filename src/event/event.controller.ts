@@ -23,6 +23,7 @@ import {
   UpdateEventRequest,
   GetEventResponse,
   GetCityLeaderboardResponse,
+  GetEventsResponse,
 } from '../contract';
 import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
 
@@ -95,6 +96,17 @@ export class EventController {
     @Usr() user: User,
   ): Promise<void> {
     await this.eventService.cancelEvent(id, user.id);
+  }
+
+  @Get()
+  @HttpCode(HttpStatus.OK)
+  async getEventsHomePage(@Param() params): Promise<GetEventsResponse> {
+    const limit = params.limit || '10';
+    const page = params.page || '0';
+    return await this.eventService.paginate({
+      limit: parseInt(limit, 10),
+      page: parseInt(page, 10),
+    });
   }
 
   @Get(':id')
