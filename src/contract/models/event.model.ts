@@ -31,4 +31,5 @@ export class Event {
   created?: Date;
   @ApiModelProperty()
   modified?: Date;
+  participationApproved?: boolean;
 }

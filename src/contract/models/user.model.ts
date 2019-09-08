@@ -34,4 +34,5 @@ export class User {
   phone?: string;
   @ApiModelProperty()
   type?: UserType;
+  point?: number;
 }

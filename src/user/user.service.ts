@@ -8,10 +8,16 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
-import { SignupRequest, GetLeaderboardResponse } from '../contract';
+import {
+  SignupRequest,
+  GetLeaderboardResponse,
+  GetUserResponse,
+} from '../contract';
 import { isNullOrUndefined } from 'util';
 import { getConnection } from 'typeorm';
 import { toUserModel } from './user.mapper';
+import { Event } from '../event/event.entity';
+import { toEventModel } from '../event/event.mapper';
 
 @Injectable()
 export class UserService {
@@ -22,6 +28,53 @@ export class UserService {
 
   public async getUserEntityById(id: number): Promise<User> {
     return await this.userRepository.findOne(id);
+  }
+
+  public async getUserWithEventsAndPoint(user: User): Promise<GetUserResponse> {
+    const userEntity = await this.userRepository.findOne(user, {
+      relations: ['events', 'createdEvents'],
+    });
+
+    const participationMap = new Map<number, boolean>();
+
+    const participatedEventIds = userEntity.events.map(event => {
+      participationMap.set(event.eventId, event.approved);
+      return event.eventId;
+    });
+
+    const createdEventIds = userEntity.events.map(event => event.eventId);
+
+    const participatedEvents = (await getConnection()
+      .getRepository('event')
+      .findByIds(participatedEventIds)) as Event[];
+
+    const createdEvents = (await getConnection()
+      .getRepository('event')
+      .findByIds(createdEventIds)) as Event[];
+
+    const points =
+      participatedEvents
+        .filter(event => participationMap.get(event.id))
+        .map(e => e.point)
+        .reduce((prev, next) => prev + next, 0) +
+      2 *
+        createdEvents
+          .filter(event => event.approved)
+          .map(e => e.point)
+          .reduce((prev, next) => prev + next, 0);
+
+    const userModel = toUserModel(userEntity);
+    userModel.point = points;
+
+    return new GetUserResponse(
+      userModel,
+      createdEvents.map(e => toEventModel(e)),
+      participatedEvents.map(e => {
+        const eM = toEventModel(e);
+        eM.participationApproved = participationMap.get(eM.id);
+        return eM;
+      }),
+    );
   }
 
   public async getUserEntityByUsername(username: string): Promise<User> {

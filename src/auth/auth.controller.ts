@@ -23,11 +23,15 @@ import { AuthGuard } from '@nestjs/passport';
 import { Usr } from '../user/user.decorator';
 import { User } from '../user/user.entity';
 import { toUserModel } from '../user/user.mapper';
+import { UserService } from '../user/user.service';
 
 @ApiUseTags('auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly userService: UserService,
+  ) {}
 
   @Post('signup')
   @HttpCode(HttpStatus.CREATED)
@@ -46,7 +50,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard())
   async getUserWithToken(@Usr() user: User): Promise<GetUserResponse> {
-    return new GetUserResponse(toUserModel(user));
+    return await this.userService.getUserWithEventsAndPoint(user);
   }
 
   @Get('verify')
