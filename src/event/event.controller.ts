@@ -22,6 +22,7 @@ import {
   UserType,
   UpdateEventRequest,
   GetEventResponse,
+  GetCityLeaderboardResponse,
 } from '../contract';
 import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
 
@@ -102,5 +103,11 @@ export class EventController {
     @Param('id', ParseIntPipe) id: number,
   ): Promise<GetEventResponse> {
     return await this.eventService.getEventWithNParticipantsAndCreator(id, 3);
+  }
+
+  @Get('leaderboard/city')
+  @HttpCode(HttpStatus.OK)
+  async getCitywiseLeaderBoard(): Promise<GetCityLeaderboardResponse> {
+    return await this.eventService.getTopNCities(20);
   }
 }

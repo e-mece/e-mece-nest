@@ -9,12 +9,14 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Event } from './event.entity';
-import { Repository } from 'typeorm';
+import { Repository, getConnection } from 'typeorm';
 import {
   CreateEventRequest,
   Event as IEvent,
   UpdateEventRequest,
   GetEventResponse,
+  GetCityLeaderboardResponse,
+  CityLeader,
 } from '../contract';
 import {
   toEventEntity,
@@ -166,6 +168,23 @@ export class EventService {
       // TODO: err also returns pwd hash :)
       throw new BadRequestException(err);
     }
+  }
+
+  public async getTopNCities(
+    limit: number,
+  ): Promise<GetCityLeaderboardResponse> {
+    let creationPoints: Array<{ city: string; spts: number }> = null;
+
+    creationPoints = await getConnection()
+      .createEntityManager()
+      .query(
+        // tslint:disable-next-line: max-line-length
+        `SELECT city, sum(pts) as spts FROM (SELECT e.city as city, 2 * SUM(e.point) as pts FROM event e WHERE e.approved = TRUE GROUP BY city UNION SELECT e.city as city, SUM(e.point) AS pts FROM event e, \`user-event\` ue WHERE e.id=ue.eventId and ue.approved = TRUE GROUP BY city ) as tbl  GROUP BY city HAVING spts IS NOT NULL ORDER BY spts DESC LIMIT ${limit};`,
+      );
+
+    return new GetCityLeaderboardResponse(
+      creationPoints.map(cP => new CityLeader(cP.city, cP.spts)),
+    );
   }
 
   public async cancelEvent(eventId: number, userId: number) {

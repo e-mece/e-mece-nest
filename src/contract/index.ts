@@ -1,5 +1,6 @@
 export { UserType } from './enums/user-type.enum';
 
+export { CityLeader } from './models/city-leader.model';
 export { Event } from './models/event.model';
 export { User } from './models/user.model';
 
@@ -13,6 +14,9 @@ export { UpdateEventRequest } from './request/update-event-request.model';
 export { UpdateUserRequest } from './request/update-user-request.model';
 
 export { CreateEventResponse } from './response/create-event-response.model';
+export {
+  GetCityLeaderboardResponse,
+} from './response/get-city-leaderboard-response.model';
 export { GetEventResponse } from './response/get-event-response.model';
 export {
   GetLeaderboardResponse,
