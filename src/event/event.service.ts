@@ -38,6 +38,23 @@ export class EventService {
     private readonly userEventRepository: Repository<UserEvent>,
   ) {}
 
+  public async getClosestNEvents(
+    lat: number,
+    long: number,
+    limit: number,
+  ): Promise<GetEventsResponse> {
+    const closestPoints: Event[] = await getConnection()
+      .createEntityManager()
+      .query(
+        // tslint:disable-next-line: max-line-length
+        `SELECT * FROM ( select *, ( 3959 * acos( cos( radians(${lat}) ) * cos( radians(${lat}) ) * cos( radians(${long}) - radians(${long}) ) + sin( radians(${lat}) ) * sin( radians(${lat}) ) )) as distance from event where event.startDate > now() and event.approved = TRUE and event.isCancelled = FALSE) as tbl WHERE distance < 1 ORDER BY distance ASC LIMIT ${limit};`,
+      );
+
+    return new GetEventsResponse(
+      closestPoints.map(event => toEventModel(event)),
+    );
+  }
+
   public async getEventWithNParticipantsAndCreator(
     eventId: number,
     participantLimit: number,

@@ -33,6 +33,15 @@ import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
 export class EventController {
   constructor(private readonly eventService: EventService) {}
 
+  @Get('geo/:lat/:long')
+  @HttpCode(HttpStatus.OK)
+  async getClosestEvents(
+    @Param('lat', ParseIntPipe) lat: number,
+    @Param('long', ParseIntPipe) long: number,
+  ): Promise<GetEventsResponse> {
+    return await this.eventService.getClosestNEvents(lat, long, 5);
+  }
+
   @ApiBearerAuth()
   @Post()
   @HttpCode(HttpStatus.CREATED)
