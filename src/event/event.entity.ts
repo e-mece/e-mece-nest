@@ -43,7 +43,7 @@ export class Event implements IEvent {
   @Column('int')
   quota: number;
 
-  @Column('varchar', { nullable: true, length: 511 })
+  @Column('mediumtext', { nullable: true })
   image?: string;
 
   @Column('boolean', { default: false })

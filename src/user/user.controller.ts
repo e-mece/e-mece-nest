@@ -29,6 +29,14 @@ export class UserController {
     return await this.userService.getLeaderBoard(20);
   }
 
+  @Get('leaderboard/:city')
+  @HttpCode(HttpStatus.OK)
+  async getTopUsersOfCity(
+    @Param('city') city: string,
+  ): Promise<GetLeaderboardResponse> {
+    return await this.userService.getLeaderBoardOfCity(20, city);
+  }
+
   @ApiBearerAuth()
   @Put(':id')
   @HttpCode(HttpStatus.OK)

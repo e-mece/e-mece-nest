@@ -40,7 +40,7 @@ export class User implements IUser {
   @Column('varchar', { nullable: true, length: 255 })
   middleName?: string;
 
-  @Column('varchar', { nullable: true, length: 511 })
+  @Column('mediumtext', { nullable: true })
   image?: string;
 
   @Column('boolean', { default: false })
