@@ -11,6 +11,7 @@ import {
   Delete,
   Get,
   HttpStatus,
+  Query,
 } from '@nestjs/common';
 import { EventService } from './event.service';
 import { AuthGuard } from '@nestjs/passport';
@@ -100,9 +101,12 @@ export class EventController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  async getEventsHomePage(@Param() params): Promise<GetEventsResponse> {
-    const limit = params.limit || '10';
-    const page = params.page || '0';
+  async getEventsHomePage(
+    @Query('limit') limit: string,
+    @Query('page') page: string,
+  ): Promise<GetEventsResponse> {
+    limit = limit || '10';
+    page = page || '0';
     return await this.eventService.paginate({
       limit: parseInt(limit, 10),
       page: parseInt(page, 10),

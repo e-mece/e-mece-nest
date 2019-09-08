@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Event } from './event.entity';
-import { Repository, getConnection } from 'typeorm';
+import { Repository, getConnection, MoreThan } from 'typeorm';
 import {
   CreateEventRequest,
   Event as IEvent,
@@ -163,10 +163,10 @@ export class EventService {
       where: {
         approved: true,
         isCancelled: false,
-        startDate: date => date > new Date(),
+        startDate: MoreThan(new Date()),
       },
       take: options.limit,
-      skip: options.page, // think this needs to be page * limit
+      skip: options.page * options.limit,
       order: { startDate: 'ASC' },
     });
 
@@ -175,7 +175,7 @@ export class EventService {
     const result = new GetEventsResponse(eventModels);
 
     result.total = total;
-    result.pageTotal = Math.floor(total / options.limit);
+    result.pageTotal = Math.ceil(total / options.limit);
 
     return result;
   }
