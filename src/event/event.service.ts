@@ -48,20 +48,24 @@ export class EventService {
       throw new NotFoundException();
     }
 
-    // there is also findAndCount if needed for pagination
+    let count = 0;
     const participants = await this.userEventRepository
-      .find({
+      .findAndCount({
         where: { eventId },
         relations: ['user'],
         order: { created: 'DESC' },
         take: participantLimit,
       })
-      .then((userEvents: UserEvent[]) =>
-        userEvents.map(userEvent => toUserModel(userEvent.user)),
-      );
+      .then((userEvents: [UserEvent[], number]) => {
+        count = userEvents[1];
+        return userEvents[0].map(userEvent => toUserModel(userEvent.user));
+      });
+
+    const eventModel = toEventModel(eventEntity);
+    eventModel.participantCount = count;
 
     return new GetEventResponse(
-      toEventModel(eventEntity),
+      eventModel,
       toUserModel(eventEntity.creator),
       participants,
     );
